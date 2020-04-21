@@ -31,7 +31,7 @@ def GetPOD_CODES(file_name, root_path):
                 line_counter = line_counter + 1
                 
             else:
-                pod_source_dict[linesplit[0]] = linesplit[2]
+                pod_source_dict[linesplit[0]] = linesplit[2].strip()
                 
     search.close()   
     return pod_source_dict
@@ -116,9 +116,9 @@ def GetWR_Data(file_name, root_path):
                 temp_len = int(linesplit[1])
                 wr_pou_dict[snap_id][temp_len] = dict()
                 
-                wr_pou_dict[snap_id][temp_len]['Source'] = linesplit[2]
+                wr_pou_dict[snap_id][temp_len]['Source'] = linesplit[2].strip()
                 
-                wr_pou_dict[snap_id][temp_len]['Use'] = linesplit[5]
+                wr_pou_dict[snap_id][temp_len]['Use'] = linesplit[5].strip()
                 
                 celltext = linesplit[6]
                         
@@ -183,8 +183,13 @@ def GetWR_POD_Data(file_name, root_path, pou_keys):
                     wr_pod_dict[int(linesplit[0])][int(linesplit[2])] = dict()
                     wr_pod_dict[int(linesplit[0])][int(linesplit[2])]['pod_id'] = int(linesplit[1])
                     wr_pod_dict[int(linesplit[0])][int(linesplit[2])]['pod_use_id'] = int(linesplit[2])
-                    wr_pod_dict[int(linesplit[0])][int(linesplit[2])]['source_type'] = linesplit[8]
-                    wr_pod_dict[int(linesplit[0])][int(linesplit[2])]['use_code'] = linesplit[11]
+                    wr_pod_dict[int(linesplit[0])][int(linesplit[2])]['source_type'] = linesplit[8].strip()
+                    
+                    use_code = linesplit[11].strip()
+                    if use_code.strip() == 'PRIMARY AND SUPPLEMENTAL IRRIGATION':
+                        use_code = 'IRRIGATION'
+                    
+                    wr_pod_dict[int(linesplit[0])][int(linesplit[2])]['use_code'] = use_code
                     
                     if len(linesplit[12]) > 5:
                         celltext = linesplit[12]
@@ -195,6 +200,11 @@ def GetWR_POD_Data(file_name, root_path, pou_keys):
                         mon = int(celltext[0:slashid[0]])
                             
                         wr_pod_dict[int(linesplit[0])][int(linesplit[2])]['priority'] = datetime.datetime(year,mon,day)
+                    
+                    if float(linesplit[13]) != -999:
+                        wr_pod_dict[int(linesplit[0])][int(linesplit[2])]['duty'] = float(linesplit[13])
+                    #else:
+                    #    wr_pod_dict[int(linesplit[0])][int(linesplit[2])]['duty'] = float('nan')
                         
                     if float(linesplit[14]) != -999:
                         wr_pod_dict[int(linesplit[0])][int(linesplit[2])]['rate'] = float(linesplit[14])
@@ -208,7 +218,9 @@ def GetWR_POD_Data(file_name, root_path, pou_keys):
                         
                     if float(linesplit[17]) != -999:    
                         wr_pod_dict[int(linesplit[0])][int(linesplit[2])]['acre_feet'] = float(linesplit[17])
-                    
+                    #else:
+                    #    wr_pod_dict[int(linesplit[0])][int(linesplit[2])]['acre_feet'] = float('nan')
+                        
                     wr_pod_dict[int(linesplit[0])][int(linesplit[2])]['source'] = linesplit[20]
                     wr_pod_dict[int(linesplit[0])][int(linesplit[2])]['begin_mon'] = int(linesplit[25])
                     wr_pod_dict[int(linesplit[0])][int(linesplit[2])]['begin_day'] = int(linesplit[26])
@@ -262,22 +274,65 @@ for i in wr_pou_dict.keys():
             wris_per_use[wr_pou_dict[i][ii]['Use']][wr_pou_dict[i][ii]['Source']] = 0
               
         if np.isnan(wr_pou_dict[i][ii]['acre_feet']) == 1:
-            empty_acres.append((1,i,ii,wr_pou_dict[i][ii]['Use']))
-#            if i in wr_pod_dict.keys():
-#                temp_sum = 0
-#                for iii in wr_pod_dict[i].keys():
-#                    if 'acre_feet' in wr_pod_dict[i][iii].keys() and wr_pou_dict[i][ii]['Use'] == wr_pod_dict[i][iii]['use_code']:
-#                        temp_sum = temp_sum + wr_pod_dict[i][iii]['acre_feet']
-#                if temp_sum !=0:
-#                    wris_per_use[wr_pou_dict[i][ii]['Use']][wr_pou_dict[i][ii]['Source']] = wris_per_use[wr_pou_dict[i][ii]['Use']][wr_pou_dict[i][ii]['Source']] + temp_sum
-#                    non_empty_acres.append((i,ii,wr_pou_dict[i][ii]['Use'])) 
-#                else:
-#                    empty_acres.append((i,ii,wr_pou_dict[i][ii]['Use']))
-#            else:
-#                empty_acres.append((i,ii,wr_pou_dict[i][ii]['Use']))
+            #empty_acres.append((1,i,ii,wr_pou_dict[i][ii]['Use']))
+            
+            if i in wr_pod_dict.keys():
+                #temp_sum = 0
+                temp_sum = dict()
+                for iii in wr_pod_dict[i].keys():
+                    use_case_match = 0
+                    if wr_pou_dict[i][ii]['Use'] == wr_pod_dict[i][iii]['use_code']:
+                        use_case_match = 1
+                    if wr_pou_dict[i][ii]['Use'] == 'STORAGE' and wr_pod_dict[i][iii]['use_code'] == 'IRRIGATION':
+                        use_case_match = 1
+                        
+                    if ('acre_feet' in wr_pod_dict[i][iii].keys() and 
+                        wr_pou_dict[i][ii]['Source'] == pod_source_dict[wr_pod_dict[i][iii]['source_type']] and use_case_match == 1):
+                        if pod_source_dict[wr_pod_dict[i][iii]['source_type']] not in temp_sum.keys():
+                            temp_sum[pod_source_dict[wr_pod_dict[i][iii]['source_type']]] = 0
+                        
+                        #temp_sum = temp_sum + wr_pod_dict[i][iii]['acre_feet']
+                        temp_sum[pod_source_dict[wr_pod_dict[i][iii]['source_type']]] = temp_sum[pod_source_dict[wr_pod_dict[i][iii]['source_type']]] + wr_pod_dict[i][iii]['acre_feet']
+                        
+                #if temp_sum !=0:
+                if len(temp_sum.keys()) != 0:
+                    for zi in temp_sum.keys():
+                        if zi not in wris_per_use[wr_pou_dict[i][ii]['Use']].keys():
+                            wris_per_use[wr_pou_dict[i][ii]['Use']][zi] = 0
+                            
+                        wris_per_use[wr_pou_dict[i][ii]['Use']][wr_pou_dict[i][ii]['Source']] = wris_per_use[wr_pou_dict[i][ii]['Use']][wr_pou_dict[i][ii]['Source']] + temp_sum[zi]
+                    #non_empty_acres.append((i,ii,wr_pou_dict[i][ii]['Use']))
+                        non_empty_acres.append((2,i,ii,wr_pou_dict[i][ii]['Use'],wr_pou_dict[i][ii]['Source'],temp_sum[zi])) 
+                    
+                else:
+                    empty_acres.append((1,i,ii,wr_pou_dict[i][ii]['Use']))
+            else:
+                empty_acres.append((1,i,ii,wr_pou_dict[i][ii]['Use']))
+                
         else:
-            wris_per_use[wr_pou_dict[i][ii]['Use']][wr_pou_dict[i][ii]['Source']] = wris_per_use[wr_pou_dict[i][ii]['Use']][wr_pou_dict[i][ii]['Source']] + wr_pou_dict[i][ii]['acre_feet']
-            non_empty_acres.append((1,i,ii,wr_pou_dict[i][ii]['Use'],wr_pou_dict[i][ii]['Source'],wr_pou_dict[i][ii]['acre_feet']))
+            if i in wr_pod_dict.keys():
+                old_duty = -999
+                c = 0
+                for iii in wr_pod_dict[i].keys():
+                    use_case_match = 0
+                    if wr_pou_dict[i][ii]['Use'] == wr_pod_dict[i][iii]['use_code']:
+                        use_case_match = 1
+                    if wr_pou_dict[i][ii]['Use'] == 'STORAGE' and wr_pod_dict[i][iii]['use_code'] == 'IRRIGATION':
+                        use_case_match = 1
+                    
+                    if ('duty' in wr_pod_dict[i][iii].keys() and 
+                        wr_pou_dict[i][ii]['Source'] == pod_source_dict[wr_pod_dict[i][iii]['source_type']] and use_case_match == 1):
+                            temp = wr_pod_dict[i][iii]['duty']
+                            if old_duty != temp and c > 1:
+                                print i,ii
+                            if c == 1:
+                                old_duty = temp
+                            c = c + 1
+                wris_per_use[wr_pou_dict[i][ii]['Use']][wr_pou_dict[i][ii]['Source']] = wris_per_use[wr_pou_dict[i][ii]['Use']][wr_pou_dict[i][ii]['Source']] + wr_pou_dict[i][ii]['acre_feet']*temp
+                #non_empty_acres.append((1,i,ii,wr_pou_dict[i][ii]['Use'],wr_pou_dict[i][ii]['Source'],wr_pou_dict[i][ii]['acre_feet']))
+                non_empty_acres.append((1,i,ii,wr_pou_dict[i][ii]['Use'],wr_pou_dict[i][ii]['Source'],wr_pou_dict[i][ii]['acre_feet']*temp))
+            else:
+                empty_acres.append((1,i,ii,wr_pou_dict[i][ii]['Use']))
 
 aa = np.asarray(non_empty_acres)
 
@@ -288,18 +343,18 @@ aa = np.asarray(non_empty_acres)
 #    ii = empty_acres[j][1]
 #    
 #    if i in wr_pod_dict.keys():    
-#        
 #        temp_sum = dict()
 #        for iii in wr_pod_dict[i].keys():
 #            
-#            if 'acre_feet' in wr_pod_dict[i][iii].keys() and wr_pou_dict[i][ii]['Use'] == wr_pod_dict[i][iii]['use_code']:
-#                if wr_pod_dict[i][iii]['source_type'] not in temp_sum.keys():
-#                    temp_sum[wr_pod_dict[i][iii]['source_type']] = 0
-#                temp_sum[wr_pod_dict[i][iii]['source_type']] = temp_sum[wr_pod_dict[i][iii]['source_type']] + wr_pod_dict[i][iii]['acre_feet']
+#            if ('acre_feet' in wr_pod_dict[i][iii].keys() and wr_pou_dict[i][ii]['Use'] == wr_pod_dict[i][iii]['use_code'] and 
+#                wr_pou_dict[i][ii]['Source'].strip() == pod_source_dict[wr_pod_dict[i][iii]['source_type'].strip()]):
+#                if wr_pod_dict[i][iii]['source_type'].strip() not in temp_sum.keys():
+#                    temp_sum[wr_pod_dict[i][iii]['source_type'].strip()] = 0
+#                temp_sum[wr_pod_dict[i][iii]['source_type'].strip()] = temp_sum[wr_pod_dict[i][iii]['source_type'].strip()] + wr_pod_dict[i][iii]['acre_feet']
 #        
 #        if len(temp_sum.keys()) != 0:
 #            for zi in temp_sum.keys():
-#                tempsource = pod_source_dict[zi.strip()]
+#                tempsource = pod_source_dict[zi.strip()].strip()
 #                if tempsource not in wris_per_use[wr_pou_dict[i][ii]['Use']].keys():
 #                    wris_per_use[wr_pou_dict[i][ii]['Use']][tempsource] = 0
 #                
@@ -315,7 +370,7 @@ aa = np.asarray(non_empty_acres)
 #        empty_acres.append(temp_empty_acres[i])
 #
 #del temp_empty_acres     
-#
+
 ##%%
 #wrate_per_use = dict()
 #empty_rates = []
@@ -344,8 +399,8 @@ aa = np.asarray(non_empty_acres)
 #  
 #              
 ##%%
-#non_empty_rates = np.asarray(non_empty_rates)
-#empty_acres_bool = np.zeros((len(empty_acres),1))
+non_empty_acres_arr = np.asarray(non_empty_acres)
+empty_acres_bool_arr = np.asarray(empty_acres)
 #
 #for i in range(len(empty_acres)):
 #    if empty_acres[i][0] in non_empty_rates[:,0]:

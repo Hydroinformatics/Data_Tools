@@ -92,16 +92,17 @@ if __name__ == '__main__':
     
     args = parser.parse_args()
     main_path = args.path[0].replace('\\','/')
-    system_boundary = args.path[1].replace('\\','/')
-    begin_year = args.path[2]
-    end_year = args.path[3]
+    csv_file_name = args.path[1].replace('\\','/')
+    system_boundary = args.path[2].replace('\\','/')
+    begin_year = int(args.path[3])
+    end_year = int(args.path[4])
     
     #main_path = r'Z:\Projects\INFEWS\Modeling\FEW_Data\PRISM_RecentYears'
     #system_boundary = 'System_Boundary_16km.tif'
     #begin_year = 1981
     #end_year = 2019
 
-    pathunzip = main_path + '\temp'
+    pathunzip = main_path + '/temp'
     
     #%%
     path = main_path + '/' + system_boundary
@@ -144,22 +145,24 @@ if __name__ == '__main__':
         fnames = os.listdir(path)
         
         for name in fnames:
-            dash_index = [i for i in range(len(name)) if name[i] == '_']
-            datestr = name[dash_index[-2]+1:dash_index[-1]]
-            PRISM_Data[nrow,0] = int(datestr[0:4])
-            PRISM_Data[nrow,1] = int(datestr[4:6])
-            PRISM_Data[nrow,2] = int(datestr[6:])
-            
-            pathzip = path + '/' + name
-            UnzipData(pathzip,pathunzip)
-            
-            temp_fnames = os.listdir(pathunzip)
-            main_bil_file = [tname for tname in temp_fnames if '.bil' in tname[-4:]]
-            print main_bil_file[0]
-            data = ReadBilFile(pathunzip + '/' + main_bil_file[0])
-            data = data[top_row:last_row+1,left_col:right_col+1]
-            data = np.transpose(data.flatten())
-            PRISM_Data[nrow,3:3+len(data)] = data
-            nrow = nrow + 1
+            #if len(name) < 45: # added for daily temperature values
+            if len(name) < 41: # added for daily min temp.
+                dash_index = [i for i in range(len(name)) if name[i] == '_']
+                datestr = name[dash_index[-2]+1:dash_index[-1]]
+                PRISM_Data[nrow,0] = int(datestr[0:4])
+                PRISM_Data[nrow,1] = int(datestr[4:6])
+                PRISM_Data[nrow,2] = int(datestr[6:])
+                
+                pathzip = path + '/' + name
+                UnzipData(pathzip,pathunzip)
+                
+                temp_fnames = os.listdir(pathunzip)
+                main_bil_file = [tname for tname in temp_fnames if '.bil' in tname[-4:]]
+                print main_bil_file[0]
+                data = ReadBilFile(pathunzip + '/' + main_bil_file[0])
+                data = data[top_row:last_row+1,left_col:right_col+1]
+                data = np.transpose(data.flatten())
+                PRISM_Data[nrow,3:3+len(data)] = data
+                nrow = nrow + 1
     
-    np.savetxt(main_path + '/' + 'PRISM_PPT_Data.csv', PRISM_Data, delimiter=",")
+    np.savetxt(main_path + '/' + csv_file_name, PRISM_Data, delimiter=",")

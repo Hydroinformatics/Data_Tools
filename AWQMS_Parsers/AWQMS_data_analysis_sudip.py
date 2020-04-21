@@ -60,6 +60,7 @@ for i in range(3,ws.max_row):
             station_data[str(std_id)]['Data'][var_name]['Units'] = []
             
         station_data[str(std_id)]['Data'][var_name]['Time'].append([year_str,mon_str,day_str])
+        
         if '>' in ws.cell(row=i, column=sample_value_col).value:
             station_data[str(std_id)]['Data'][var_name]['Value'].append(float(ws.cell(row=i, column=sample_value_col).value.strip('>'))+1)
         elif '<' in ws.cell(row=i, column=sample_value_col).value:

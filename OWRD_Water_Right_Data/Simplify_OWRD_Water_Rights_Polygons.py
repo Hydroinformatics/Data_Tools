@@ -35,7 +35,10 @@ outLayer = outDataSource.CreateLayer("states_convexhull", geom_type=ogr.wkbPolyg
 idField = ogr.FieldDefn("id", ogr.OFTInteger)
 outLayer.CreateField(idField)
 
-idField = ogr.FieldDefn("wrid", ogr.OFTInteger)
+idField = ogr.FieldDefn("obj_wrid", ogr.OFTInteger)
+outLayer.CreateField(idField)
+
+idField = ogr.FieldDefn("snp_id", ogr.OFTInteger)
 outLayer.CreateField(idField)
 
 #%%
@@ -54,6 +57,7 @@ for feature in layer:
     geom = feature.geometry()
     points = feature.GetGeometryRef()
     ft_id = feature.GetField("OBJECTID")
+    snp_id = feature.GetField("snp_id")
     
     # Create the feature and set values
     featureDefn = outLayer.GetLayerDefn()
@@ -76,7 +80,8 @@ for feature in layer:
         for pt in points:
     
             featureo.SetField("id", ft_idc)
-            featureo.SetField("wrid", ft_id)
+            featureo.SetField("obj_wrid", ft_id)
+            featureo.SetField("snp_id", snp_id)
         
             #diam_bool = 1
             bufferDistance = 500
@@ -123,7 +128,9 @@ for feature in layer:
             
     else:
         featureo.SetField("id", ft_idc)
-        featureo.SetField("wrid", ft_id)
+        featureo.SetField("obj_wrid", ft_id)
+        featureo.SetField("snp_id", snp_id)
+        
         pts.append(pt.GetPoints())
         #area.append(pt.GetArea())
         featureo.SetGeometry(points)
