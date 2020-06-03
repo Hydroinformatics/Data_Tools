@@ -29,7 +29,7 @@ if os.path.exists(outShapefile):
 # Create the output shapefile
 outDataSource = outDriver.CreateDataSource(outShapefile)
 #outLayer = outDataSource.CreateLayer("wr_v_pou_public_proj_REGION_IRRIGATION_ConvexHull", geom_type=ogr.wkbPolygon)
-outLayer = outDataSource.CreateLayer("states_convexhull", geom_type=ogr.wkbPolygon)
+outLayer = outDataSource.CreateLayer("states_convexhull", geom_type = ogr.wkbPolygon)
 
 # Add an ID field
 idField = ogr.FieldDefn("id", ogr.OFTInteger)
@@ -42,10 +42,14 @@ idField = ogr.FieldDefn("snp_id", ogr.OFTInteger)
 outLayer.CreateField(idField)
 
 #%%
+driver = ogr.GetDriverByName("ESRI Shapefile")
+#path_shp = r'Z:\Projects\INFEWS\Modeling\GIS_Data\Data\plss\plss_proj.shp'
+#
+#plss_dataSource = driver.Open(path_shp, 0)
+#layer_plss = plss_dataSource.GetLayer()
 
 path_shp = r'Z:\Projects\INFEWS\Modeling\GIS_Data\Data\wr_state\wr_v_pou_public_proj_REGION_IRRIGATION.shp'
 
-driver = ogr.GetDriverByName("ESRI Shapefile")
 dataSource = driver.Open(path_shp, 0)
 layer = dataSource.GetLayer()
 

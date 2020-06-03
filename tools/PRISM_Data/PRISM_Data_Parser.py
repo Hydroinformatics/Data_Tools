@@ -86,9 +86,9 @@ def GetPixelCentroids(raster):
 #%%
 if __name__ == '__main__':
 ##%% Parse Path to DEM File
-    parser = argparse.ArgumentParser(description='Inputs Files')
+    parser = argparse.ArgumentParser(description='Inputs File')
     parser.add_argument('path', metavar='-p', type=str, nargs='+',
-                        help='Path to text file with list of input Files')
+                        help='Path to text file with list of input parameters')
     
     args = parser.parse_args()
     main_path = args.path[0].replace('\\','/')
