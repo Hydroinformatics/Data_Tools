@@ -1253,7 +1253,6 @@ lu_raster_flat = lu_region.flatten()
 #lu_region = temp_lu
 #lu_raster_flat = lu_region.flatten()
 
-
 combo_arr = np.transpose(np.vstack((lu_raster_flat, swwr_flat, gwwr_flat)))
 
 unique_rows = np.unique(combo_arr, axis=0)
