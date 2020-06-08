@@ -10,4 +10,4 @@ This repository contains methods and tools developed to gather and prepare hydro
 
 * [USDA_Data:](tools/USDA_Data) 
 
-### Note: Be aware the many of the tools above use objects and functions contained in the [utils](tools/utils) and/or the [QGIS tools](tools/QGIS_tools) directories. Therefore, if you want to use the code as provided, you must maintain the structure of the repository.
+**Note:** Be aware the many of the tools above use objects and functions contained in the [utils](tools/utils) and/or the [QGIS tools](tools/QGIS_tools) directories. Therefore, if you want to use the code as provided, you must maintain the structure of the repository.
