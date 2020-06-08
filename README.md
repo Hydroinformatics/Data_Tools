@@ -1,4 +1,4 @@
-# Data_Tools
+# Data Tools
 This repository contains methods and tools developed to gather and prepare hydro-climatic data, especially data associated with the Pacific Northwest. At this time, contributions to this repository are limited to students in Prof. Meghna Babbar-Sebens’ research group. If you are interested in contributing to the repository, please send an email to meghna@oregonstate.edu with your request.
 
 ### List of tools:
@@ -10,4 +10,4 @@ This repository contains methods and tools developed to gather and prepare hydro
 
 * [USDA_Data:](tools/USDA_Data) 
 
-**Note:** Be aware the many of the tools above use objects and functions contained in the [utils](tools/utils) and/or the [QGIS tools](tools/QGIS_tools) directories. Therefore, if you want to use the code as provided, you must maintain the structure of the repository.
+**Note:** Please be aware the many of the tools above use objects and functions contained in the [utils](tools/utils) and/or the [QGIS tools](tools/QGIS_tools) directories. Therefore, if you want to use the code as provided, you must maintain the structure of the repository.
