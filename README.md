@@ -14,5 +14,5 @@ This repository contains methods and tools developed to gather and prepare hydro
 
 **Note:** Please be aware the many of the tools above use objects and functions contained in the [utils](tools/utils) and/or the [QGIS tools](tools/QGIS_tools) directories. Therefore, if you want to use the code as provided, you must maintain the structure of the repository.
 
-### [User Guide](https://github.com/Hydroinformatics/Data_Tools/wiki)
+### [User Guide](https://github.com/Hydroinformatics/Data_Tools/wiki/User-Guide)
 You can find more information about the functionalities provided by each of these tools and how to use them in the user guide. 
