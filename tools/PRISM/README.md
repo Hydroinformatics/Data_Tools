@@ -27,7 +27,7 @@
   
 #### Step 3: Run script
   Call the PRISM_Data_Parser.py code from the command windows. Arguments include, in order:
-  1. Path to data directory
+  1. Path to the data directory
   2. Name of csv output file (include ".csv")
   3. TIFF raster file clip to extent of interest (include ".tiff")
   4. Beginning year (e.g., 1981)
