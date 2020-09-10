@@ -28,9 +28,10 @@
 #### Step 3: Run script
   Call the PRISM_Data_Parser.py code from the command windows. Arguments include, in order:
   1. Path to data directory
-  2. TIFF raster file clip to extent of interest
-  3. Beginning year (e.g., 1981)
-  4. End year (e.g., 2009)
+  2. Name of csv output file (include ".csv")
+  3. TIFF raster file clip to extent of interest (include ".tiff")
+  4. Beginning year (e.g., 1981)
+  5. End year (e.g., 2009)
   
 #### Step 4: Review output files
   1. PRISM_PPT_Data.csv: Each row represents a time step (year, mon., day) and each column is associated with a raster cell (referenced by the cell ID).
