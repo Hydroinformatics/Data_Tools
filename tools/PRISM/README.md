@@ -23,7 +23,7 @@
   Save the downloaded data under the same directory.
   
 #### Step 2: Define region of interest
-  Clip one of the PRISM rasters to the extent of interest and save as a .tif file in the same directory of Step 1.
+  Clip one of the PRISM rasters to only include data in the region of interest and save as a .tif file in the same directory of Step 1. Make sure the extent of the newly created .tiff file and the PRISM rasters have the same spatial extent and projection.
   
 #### Step 3: Run script
   Call the PRISM_Data_Parser.py code from the command windows. Arguments include, in order:
