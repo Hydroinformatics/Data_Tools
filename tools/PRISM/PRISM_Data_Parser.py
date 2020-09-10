@@ -98,6 +98,7 @@ if __name__ == '__main__':
     end_year = int(args.path[4])
     
     #main_path = r'Z:\Projects\INFEWS\Modeling\FEW_Data\PRISM_RecentYears'
+    #csv_file_name = 'PPT_data.csv'
     #system_boundary = 'System_Boundary_16km.tif'
     #begin_year = 1981
     #end_year = 2019
@@ -107,6 +108,8 @@ if __name__ == '__main__':
     #%%
     path = main_path + '/' + system_boundary
     region, region_NoData, region_obj = Read_Raster(path)
+    region[region != region_NoData] = 1
+    region[region == region_NoData] = 0
     
     centroids_X, centroids_Y = GetPixelCentroids(region_obj)
     
