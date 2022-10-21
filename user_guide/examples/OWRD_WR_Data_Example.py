@@ -14,14 +14,14 @@ from tools.OWRD_Data import OWRD_WR_Parser as wr_parser
 wr_parser = wr_parser.Parser()
 
 #%% Download and Unzip data
-#dest_dir = r'C:\Users\sammy\Documents\GitHub\Data_Tools\examples\Download_test'
+#dest_dir = r'..\Data_Tools\examples\Download_test'
 #wr_parser.Download(dest_dir)
 #wr_parser.Unzip_Data()
 
 #%% Clip POU and POD shapefile
-#boundary_shp = r'C:\Users\sammy\Documents\Research\SWAT\QSWAT_Input_Data\Umatilla\Umatilla_Input_data\UmatillaBoundary_proj.shp'
-boundary_shp = r'C:\Users\sammy\Documents\Research\SWAT\QSWAT_Input_Data\Umatilla\Umatilla_Input_data\Sub_basins_147\subs_input.shp'
-wrdata_dir = r'C:\Users\sammy\Documents\GitHub\Data_Tools\examples\Download_test\OWRD_Zip_Data\wr_state_sh'
+#boundary_shp = r'...\UmatillaBoundary_proj.shp'
+boundary_shp = r'...\subs_input.shp'
+wrdata_dir = r'...\wr_state_sh'
 wr_parser.Clip(['uma'], boundary_shp, wrdata_dir)
 
 #%%
