@@ -6,7 +6,7 @@ sys.path.append(os.getcwd() + '\tools')
 
 from tools.PRISM_Data import PRISM_Parser as prism_parser
 
-destdir= r'C:\Users\sammy\Documents\GitHub\Data_Tools\examples\Download_test'
+destdir= r'...\Data_Tools\examples\Download_test'
 
 # Fetch data from Remote Server
 parser = prism_parser.Parser()
