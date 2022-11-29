@@ -98,7 +98,6 @@ if __name__ == '__main__':
     end_year = int(args.path[4])
     
     #main_path = r'Z:\Projects\INFEWS\Modeling\FEW_Data\PRISM_RecentYears'
-    #csv_file_name = 'PPT_data.csv'
     #system_boundary = 'System_Boundary_16km.tif'
     #begin_year = 1981
     #end_year = 2019
@@ -106,11 +105,10 @@ if __name__ == '__main__':
     pathunzip = main_path + '/temp'
     
     #%%
-    if system_boundary.find('/') is True:
+    if system_boundary.find('/'):
         path = system_boundary
     else:
         path = main_path + '/' + system_boundary
-    print path
     region, region_NoData, region_obj = Read_Raster(path)
     region[region != region_NoData] = 1
     region[region == region_NoData] = 0
@@ -150,8 +148,9 @@ if __name__ == '__main__':
     
         path = main_path + '/' + str(year)
         fnames = os.listdir(path)
-        
-        for name in sorted(fnames):
+        fnames = fnames.sort()
+        for name in fnames:
+            
             #if len(name) < 45: # added for daily temperature values
             if len(name) < 41: # added for daily min temp.
                 dash_index = [i for i in range(len(name)) if name[i] == '_']

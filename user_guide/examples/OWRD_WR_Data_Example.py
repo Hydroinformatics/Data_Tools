@@ -8,7 +8,7 @@ import os, sys
 os.chdir('..')
 sys.path.append(os.getcwd() + '\tools')
 
-from tools.OWRD_Data import OWRD_WR_Parser as wr_parser
+from tools.OWRD import OWRD_WR_Parser as wr_parser
 
 #%% Initialize Parser
 wr_parser = wr_parser.Parser()
