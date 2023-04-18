@@ -52,17 +52,20 @@ import matplotlib.pyplot as plt
 #         #print (data)
 
 
-varname = ["LULC","HRU","GIS","SUB","MGT","AREAkm2","BIOMt/ha","YLDt/ha","IRRmm","NAUTOkg/ha","PAUTOkg/ha", "ETmm", "SW_INITmm", "SW_ENDmm", "PERCmm", "GW_RCHGmm", "REVAPmm", "W_STRS"]
+varname = ["LULC","HRU","GIS","SUB","MGT","AREAkm2","BIOMt/ha","YLDt/ha","IRRmm",
+           "NAUTOkg/ha","PAUTOkg/ha", "ETmm", "SW_INITmm", "SW_ENDmm", "PERCmm", 
+           "GW_RCHGmm", "REVAPmm", "W_STRS", "SA_IRRmm", "DA_IRRmm", "SA_STmm","DA_STmm"]
+
 varcol = [i for i in range(0,len(varname))]
 
 tfile = r'/Users/sammy/Library/CloudStorage/Box-Box/Research/SWAT/SWAT_JetStream_runs/ITERS_Results_2'
 
-files_hru = ['output_org.hru', 'output_0.hru']
+files_hru = ['output_org.hru', 'output_0.hru', 'output_low.hru']
 
 
 data = dict()
 
-for j in range(0,2):
+for j in range(0,3):
     
     data_array = dict()
     varbool = 0
@@ -110,19 +113,33 @@ for j in range(0,2):
 #%%
 
 for year in [1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006]:
-    for i in range(0,2):
+    for i in range(0,3):
         df = data[i]
-
-        #temp = np.asarray(df.loc[df['YEAR'] == 1999, 'IRRmm'])
-        temp = np.asarray(df.loc[df['YEAR'] == 1999, 'YLDt/ha'])
+        
+        
+        #temp = np.asarray(df.loc[df['YEAR'] == year, 'SA_STmm'])
+        temp = np.asarray(df.loc[df['YEAR'] == year, 'SW_INITmm'])
+        #temp = np.asarray(df.loc[df['YEAR'] == 2005, 'YLDt/ha'])
         
         if i == 0:
-            plt_data = temp
+            plt_datab = temp
         else:    
-            plt_data = np.vstack((plt_data.T,temp))
-        
-    plt_data =   plt_data.T
-    plt.plot(np.cumsum(plt_data[:,0]),np.cumsum(plt_data[:,1]))
+            plt_datab = np.vstack((plt_datab, temp))
     
+    if year == 1999:
+        plt_data = plt_datab.T
+    else:
+        plt_data = np.vstack((plt_data, plt_datab.T))
+    
+#plt_data =   plt_data
+#plt.plot(plt_data[220:275,0],'-')
+#plt.plot(plt_data[220:275,1],'-')
+#plt.plot(np.cumsum(plt_data[:,0]),np.cumsum(plt_data[:,1]))
+plt.plot(np.cumsum(plt_data[:,0]), label='Org.')
+plt.plot(np.cumsum(plt_data[:,1]), label ='Unlimited')
+plt.plot(np.cumsum(plt_data[:,2]), label ='Low')
+plt.legend()
+#plt.plot(range(0,len(plt_data[:,0])), range(0,len(plt_data[:,1])),'o-')
+
     
     
